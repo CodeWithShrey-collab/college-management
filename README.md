@@ -200,8 +200,11 @@ Recommended Render setup:
 Important:
 
 - The UI uses Firebase Authentication and Firebase Realtime Database for login/session/data workflows.
-- The AI Assistant page now supports a GPTOSS-compatible Cloudflare Worker and defaults to model `gpt-oss-20b`.
-- After deployment, open `/assistant.html` and save your Worker URL, for example `https://your-worker.workers.dev`.
+- The AI Assistant now uses a server-side NVIDIA API proxy through `POST /api/erp/chat`.
+- Set `NVIDIA_API_KEY` in your local environment and in Render before using the assistant.
+- Optional overrides:
+  - `NVIDIA_API_BASE_URL`
+  - `NVIDIA_API_MODEL`
 - The Spring Boot service still needs PostgreSQL at startup because JPA entities and repositories are part of the app.
 - `application.properties` now supports Render environment variables for datasource and port configuration.
 

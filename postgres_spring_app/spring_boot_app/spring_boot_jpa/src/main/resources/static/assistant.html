@@ -35,14 +35,7 @@
                             <h2>Student query console</h2>
                         </div>
                     </div>
-                    <form class="assistant-form" id="assistant-config-form">
-                        <label class="field-label">GPTOSS Worker URL</label>
-                        <input name="baseUrl" id="assistant-base-url" placeholder="https://your-worker.workers.dev" required>
-                        <div class="page-actions">
-                            <button class="btn btn-secondary" type="submit">Save connection</button>
-                            <div class="message-panel muted-panel" id="assistant-connection-status">Model: <strong>gpt-oss-20b</strong></div>
-                        </div>
-                    </form>
+                    <div class="message-panel muted-panel" id="assistant-connection-status">Model provider: <strong>NVIDIA API</strong></div>
                     <div class="prompt-row">
                         <button class="prompt-chip" data-prompt="When is my next exam?">Next exam</button>
                         <button class="prompt-chip" data-prompt="What is my attendance?">Attendance</button>
@@ -67,7 +60,7 @@
                         <div class="feed-card">
                             <span class="caps-label">Exam query</span>
                             <h3>When is my next exam scheduled?</h3>
-                            <p>The assistant sends your question to the GPTOSS proxy and answers using the selected worker connection.</p>
+                            <p>The assistant now sends your question to the NVIDIA-backed server proxy and returns the generated answer inside the ERP.</p>
                         </div>
                         <div class="feed-card">
                             <span class="caps-label">Attendance query</span>
@@ -77,7 +70,7 @@
                         <div class="feed-card">
                             <span class="caps-label">Finance query</span>
                             <h3>Do I still have any fee due?</h3>
-                            <p>The model defaults to <strong>gpt-oss-20b</strong> for faster response and lighter deployment cost.</p>
+                            <p>The API key stays on the server side, so students never see or store the model credentials in the browser.</p>
                         </div>
                     </div>
                 </article>

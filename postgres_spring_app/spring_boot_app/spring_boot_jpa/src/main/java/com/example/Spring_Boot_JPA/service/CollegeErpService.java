@@ -1,9 +1,17 @@
 package com.example.Spring_Boot_JPA.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.Spring_Boot_JPA.entity.*;
 import com.example.Spring_Boot_JPA.repository.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,6 +31,17 @@ public class CollegeErpService {
     private final EventAnnouncementRepository eventAnnouncementRepository;
     private final LibraryBookItemRepository libraryBookItemRepository;
     private final FeeReceiptEntryRepository feeReceiptEntryRepository;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+
+    @Value("${nvidia.api.key:}")
+    private String nvidiaApiKey;
+
+    @Value("${nvidia.api.base-url:https://integrate.api.nvidia.com/v1}")
+    private String nvidiaApiBaseUrl;
+
+    @Value("${nvidia.api.model:meta/llama-3.1-8b-instruct}")
+    private String nvidiaApiModel;
 
     public CollegeErpService(StudentProfileRepository studentProfileRepository,
                              FacultyProfileRepository facultyProfileRepository,
@@ -42,6 +61,8 @@ public class CollegeErpService {
         this.eventAnnouncementRepository = eventAnnouncementRepository;
         this.libraryBookItemRepository = libraryBookItemRepository;
         this.feeReceiptEntryRepository = feeReceiptEntryRepository;
+        this.restTemplate = new RestTemplate();
+        this.objectMapper = new ObjectMapper();
     }
 
     @Transactional(readOnly = true)
@@ -468,58 +489,129 @@ public class CollegeErpService {
 
     @Transactional(readOnly = true)
     public Map<String, Object> chatbot(Map<String, String> payload) {
-        String question = firstNonBlank(payload.get("question"), "").toLowerCase(Locale.ENGLISH);
-        String answer;
+        String question = firstNonBlank(payload.get("question"), "");
+        if (question.isEmpty()) {
+            throw new IllegalArgumentException("Question is required.");
+        }
+        if (text(nvidiaApiKey).isEmpty()) {
+            throw new IllegalStateException("NVIDIA_API_KEY is not configured on the server.");
+        }
 
-        if (question.contains("exam")) {
-            List<ExamRecord> exams = examRecordRepository.findAll();
-            if (exams.isEmpty()) {
-                answer = "No exams have been scheduled yet. Use the exams module to create the first assessment entry.";
-            } else {
-                exams.sort(Comparator.comparing(ExamRecord::getId));
-                ExamRecord exam = exams.get(0);
-                answer = "The next recorded exam is " + exam.getCourse() + " on " + exam.getExamDate()
-                        + " during " + exam.getSlot() + " at " + exam.getHall() + ".";
-            }
-        } else if (question.contains("attendance")) {
-            List<StudentProfile> students = studentProfileRepository.findAll();
-            if (students.isEmpty()) {
-                answer = "No student records are available yet, so attendance has not been recorded.";
-            } else {
-                students.sort(Comparator.comparing(StudentProfile::getStudentId));
-                StudentProfile student = students.get(0);
-                answer = student.getName() + " currently has " + (student.getAttendance() == null ? 0 : student.getAttendance())
-                        + "% attendance based on the saved record.";
-            }
-        } else if (question.contains("fee")) {
-            List<StudentProfile> students = studentProfileRepository.findAll();
-            Optional<StudentProfile> pending = students.stream()
-                    .filter(student -> !"Paid".equalsIgnoreCase(firstNonBlank(student.getFeeStatus(), "")))
-                    .findFirst();
-            if (pending.isPresent()) {
-                StudentProfile student = pending.get();
-                answer = student.getName() + " has a fee status of " + student.getFeeStatus()
-                        + " with due amount Rs. " + (student.getFeeDue() == null ? 0 : student.getFeeDue()) + ".";
-            } else {
-                answer = students.isEmpty()
-                        ? "No fee records exist yet."
-                        : "All current student fee records are marked paid.";
-            }
-        } else if (question.contains("library")) {
-            long totalBooks = libraryBookItemRepository.count();
-            long issuedBooks = libraryBookItemRepository.findAll().stream()
-                    .filter(book -> "Issued".equalsIgnoreCase(firstNonBlank(book.getStatus(), "")))
-                    .count();
-            answer = "The library currently tracks " + totalBooks + " books, with " + issuedBooks
-                    + " issued and the rest available for circulation.";
-        } else {
-            answer = "Aurora Campus AI can answer from live ERP data about exams, attendance, fees, notices, schedules, and library status.";
+        String answer;
+        try {
+            answer = askNvidia(question);
+        } catch (Exception exception) {
+            throw new IllegalStateException("NVIDIA assistant request failed: " + exception.getMessage(), exception);
         }
 
         return map(
                 "question", payload.get("question"),
-                "answer", answer
+                "answer", answer,
+                "provider", "NVIDIA API",
+                "model", nvidiaApiModel
         );
+    }
+
+    private String askNvidia(String question) throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(nvidiaApiKey.trim());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> requestBody = map(
+                "model", nvidiaApiModel,
+                "messages", Arrays.asList(
+                        map(
+                                "role", "system",
+                                "content", buildAssistantSystemPrompt()
+                        ),
+                        map(
+                                "role", "user",
+                                "content", question
+                        )
+                ),
+                "temperature", 0.3,
+                "max_tokens", 512,
+                "stream", false
+        );
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                trimTrailingSlash(nvidiaApiBaseUrl) + "/chat/completions",
+                entity,
+                String.class
+        );
+
+        JsonNode root = objectMapper.readTree(response.getBody());
+        JsonNode contentNode = root.path("choices").path(0).path("message").path("content");
+        if (contentNode.isMissingNode() || text(contentNode.asText()).isEmpty()) {
+            throw new IllegalStateException("No assistant content returned by NVIDIA.");
+        }
+        return contentNode.asText().trim();
+    }
+
+    private String buildAssistantSystemPrompt() {
+        Map<String, Object> analytics = getAdminAnalytics();
+        List<StudentProfile> students = studentProfileRepository.findAll();
+        List<ExamRecord> exams = examRecordRepository.findAll();
+        List<NoticeItem> notices = noticeItemRepository.findAll();
+        List<LibraryBookItem> books = libraryBookItemRepository.findAll();
+
+        students.sort(Comparator.comparing(StudentProfile::getStudentId));
+        exams.sort(Comparator.comparing(ExamRecord::getExamId));
+        notices.sort((left, right) -> right.getId().compareTo(left.getId()));
+
+        StudentProfile sampleStudent = students.isEmpty() ? null : students.get(0);
+        ExamRecord nextExam = exams.isEmpty() ? null : exams.get(0);
+        NoticeItem latestNotice = notices.isEmpty() ? null : notices.get(0);
+        long issuedBooks = books.stream()
+                .filter(book -> "Issued".equalsIgnoreCase(firstNonBlank(book.getStatus(), "")))
+                .count();
+
+        StringBuilder context = new StringBuilder();
+        context.append("You are Aurora Campus ERP Assistant. ");
+        context.append("Answer only using the campus data provided below. ");
+        context.append("If the requested detail is missing, say that the ERP does not currently contain that exact record. ");
+        context.append("Keep answers concise, helpful, and student-friendly.\n\n");
+        context.append("Campus analytics:\n");
+        context.append("- Total students: ").append(analytics.get("totalStudents")).append('\n');
+        context.append("- Total faculty: ").append(analytics.get("totalFaculty")).append('\n');
+        context.append("- Pending fees: ").append(analytics.get("pendingFees")).append('\n');
+        context.append("- Average attendance: ").append(analytics.get("averageAttendance")).append("%\n");
+        context.append("- Active notices: ").append(analytics.get("activeNotices")).append('\n');
+        context.append("- Books issued: ").append(issuedBooks).append('\n');
+
+        if (sampleStudent != null) {
+            context.append("Sample student record:\n");
+            context.append("- ").append(sampleStudent.getName())
+                    .append(" (").append(sampleStudent.getStudentId()).append("), ")
+                    .append(firstNonBlank(sampleStudent.getDepartment(), "Department unavailable"))
+                    .append(", attendance ")
+                    .append(sampleStudent.getAttendance() == null ? 0 : sampleStudent.getAttendance())
+                    .append("%, fee status ")
+                    .append(firstNonBlank(sampleStudent.getFeeStatus(), "Unknown"))
+                    .append(", fee due Rs. ")
+                    .append(sampleStudent.getFeeDue() == null ? 0 : sampleStudent.getFeeDue())
+                    .append('\n');
+        }
+
+        if (nextExam != null) {
+            context.append("Next recorded exam:\n");
+            context.append("- ").append(nextExam.getCourse())
+                    .append(" on ").append(firstNonBlank(nextExam.getExamDate(), "TBD"))
+                    .append(" at ").append(firstNonBlank(nextExam.getSlot(), "TBD"))
+                    .append(" in ").append(firstNonBlank(nextExam.getHall(), "TBD"))
+                    .append('\n');
+        }
+
+        if (latestNotice != null) {
+            context.append("Latest notice:\n");
+            context.append("- ").append(latestNotice.getTitle())
+                    .append(" [").append(firstNonBlank(latestNotice.getCategory(), "General")).append("] ")
+                    .append(firstNonBlank(latestNotice.getMessage(), ""))
+                    .append('\n');
+        }
+
+        return context.toString();
     }
 
     private StudentProfile findStudent(String studentId) {
@@ -682,5 +774,9 @@ public class CollegeErpService {
 
     private String nextCode(String prefix, long sequence) {
         return prefix + String.format(Locale.ENGLISH, "%03d", sequence);
+    }
+
+    private String trimTrailingSlash(String value) {
+        return text(value).replaceAll("/+$", "");
     }
 }
