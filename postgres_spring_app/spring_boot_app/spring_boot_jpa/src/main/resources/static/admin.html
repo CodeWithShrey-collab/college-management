@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="admin" data-title="Admin Panel" data-subtitle="Inspect platform-wide metrics, fee health, attendance quality, and operational readiness from a focused admin page.">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="page-intro">
+                <div>
+                    <p class="caps-label">Administrative Analytics</p>
+                    <h1>Monitor institutional health through a darker, calmer, executive-grade control room.</h1>
+                    <p class="page-copy">This screen surfaces KPIs, status cards, fee outcomes, and operational indicators that help administrators see campus performance without scanning every module one by one.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="admin-refresh">Refresh analytics</button>
+                    <a class="btn btn-secondary" href="/">Back to dashboard</a>
+                </div>
+            </section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Access State</p>
+                            <h2>Role permissions</h2>
+                        </div>
+                    </div>
+                    <div id="admin-access-state" class="message-panel muted-panel">Checking current session access...</div>
+                </article>
+            </section>
+
+            <section class="stats-grid" id="analytics-grid"></section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Operational Narrative</p>
+                            <h2>What the numbers imply</h2>
+                        </div>
+                    </div>
+                    <div id="admin-story" class="stack-md skeleton-block"></div>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Status Grid</p>
+                            <h2>Executive snapshot</h2>
+                        </div>
+                    </div>
+                    <div id="admin-status-grid" class="panel-grid panel-grid-2 skeleton-block"></div>
+                </article>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

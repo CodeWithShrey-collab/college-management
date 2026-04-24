@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="assistant" data-title="AI Student Assistant" data-subtitle="Offer students a conversational help layer for exams, attendance, fees, and library questions.">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="page-intro">
+                <div>
+                    <p class="caps-label">Student Support</p>
+                    <h1>A calmer conversational layer for answering everyday campus questions.</h1>
+                    <p class="page-copy">The assistant is still powered by internal logic, but this page presents it as a polished support desk with guided prompts and a cleaner conversation layout.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="assistant-refresh">Reset prompts</button>
+                    <a class="btn btn-secondary" href="/notices.html">Check notices</a>
+                </div>
+            </section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Ask Aurora AI</p>
+                            <h2>Student query console</h2>
+                        </div>
+                    </div>
+                    <div class="prompt-row">
+                        <button class="prompt-chip" data-prompt="When is my next exam?">Next exam</button>
+                        <button class="prompt-chip" data-prompt="What is my attendance?">Attendance</button>
+                        <button class="prompt-chip" data-prompt="What is my fee status?">Fee status</button>
+                        <button class="prompt-chip" data-prompt="What is the library status?">Library</button>
+                    </div>
+                    <form class="assistant-form" id="chat-form">
+                        <input name="question" placeholder="Ask about exams, attendance, fees, or library status" required>
+                        <button class="btn btn-primary" type="submit">Send question</button>
+                    </form>
+                    <div id="chat-output" class="chat-shell muted-panel">Start with a prompt or type your own question.</div>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Suggested Use</p>
+                            <h2>Typical student asks</h2>
+                        </div>
+                    </div>
+                    <div class="feed-list">
+                        <div class="feed-card">
+                            <span class="caps-label">Exam query</span>
+                            <h3>When is my next exam scheduled?</h3>
+                            <p>The assistant checks the seeded exam timetable and returns the highlighted slot.</p>
+                        </div>
+                        <div class="feed-card">
+                            <span class="caps-label">Attendance query</span>
+                            <h3>What is my attendance right now?</h3>
+                            <p>The assistant summarizes attendance from the current student dataset.</p>
+                        </div>
+                        <div class="feed-card">
+                            <span class="caps-label">Finance query</span>
+                            <h3>Do I still have any fee due?</h3>
+                            <p>The assistant surfaces pending or paid fee status from the ERP service layer.</p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

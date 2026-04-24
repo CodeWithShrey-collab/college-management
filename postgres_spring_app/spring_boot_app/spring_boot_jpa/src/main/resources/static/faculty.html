@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Faculty</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="faculty" data-title="Faculty Management" data-subtitle="Review faculty allocations, run demo role-based sign-ins, and keep instructional operations coordinated.">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="page-intro">
+                <div>
+                    <p class="caps-label">Faculty Workspace</p>
+                    <h1>Support instructors with cleaner access, clearer allocations, and visible teaching capacity.</h1>
+                    <p class="page-copy">This screen centralizes faculty directory data, course allocations, and Firebase-backed role access for students, faculty, and administrators.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="faculty-refresh">Refresh faculty view</button>
+                    <a class="btn btn-secondary" href="/schedule.html">Open schedules</a>
+                </div>
+            </section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Create Faculty</p>
+                            <h2>Add a faculty profile dynamically</h2>
+                        </div>
+                    </div>
+                    <form class="form-grid form-grid-3" id="faculty-form">
+                        <input name="facultyId" placeholder="Faculty ID (optional)">
+                        <input name="name" placeholder="Faculty name" required>
+                        <input name="department" placeholder="Department">
+                        <input name="specialization" placeholder="Specialization">
+                        <input name="allocatedCourse" placeholder="Allocated course">
+                        <input name="officeHours" placeholder="Office hours">
+                        <input name="email" placeholder="Email">
+                        <button class="btn btn-primary" type="submit">Create faculty</button>
+                    </form>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Account Access</p>
+                            <h2>Sign up, sign in, and logout</h2>
+                        </div>
+                    </div>
+                    <form class="mini-form" id="signup-form">
+                        <label class="field-label">Create account</label>
+                        <input name="name" placeholder="Full name" required>
+                        <input name="email" type="email" placeholder="Email address" required>
+                        <input name="password" type="password" placeholder="Password" required>
+                        <select name="role">
+                            <option value="student">Student</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <button class="btn btn-secondary" type="submit">Create account</button>
+                    </form>
+                    <form class="mini-form" id="login-form">
+                        <label class="field-label">Login</label>
+                        <select name="role">
+                            <option value="student">Student</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <input name="email" type="email" placeholder="Email address" required>
+                        <input name="password" type="password" placeholder="Password" required>
+                        <button class="btn btn-primary" type="submit">Sign in</button>
+                    </form>
+                    <button class="btn btn-secondary" id="logout-button" type="button">Logout</button>
+                    <div id="login-result" class="message-panel muted-panel">Create an account or sign in with Firebase email and password.</div>
+                </article>
+
+            </section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Allocation Snapshot</p>
+                            <h2>Instructional coverage</h2>
+                        </div>
+                    </div>
+                    <div id="faculty-insights" class="stack-md skeleton-block"></div>
+                </article>
+            </section>
+
+            <section class="stats-grid" id="faculty-metrics"></section>
+
+            <section class="glass-card section-card">
+                <div class="section-head">
+                    <div>
+                        <p class="caps-label">Faculty Directory</p>
+                        <h2>Current teaching roster</h2>
+                    </div>
+                </div>
+                <div class="table-shell" id="faculty-table"></div>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Notices</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="notices" data-title="Notice & Announcements" data-subtitle="Handle institutional communications, event visibility, and high-priority alerts in a calmer communication hub.">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="page-intro">
+                <div>
+                    <p class="caps-label">Communication Hub</p>
+                    <h1>Broadcast the right message at the right intensity across campus.</h1>
+                    <p class="page-copy">This page separates live notices from event context so administrators can publish updates without turning the dashboard into a cluttered announcement wall.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="notices-refresh">Refresh communications</button>
+                    <a class="btn btn-secondary" href="/assistant.html">Ask AI for notice help</a>
+                </div>
+            </section>
+
+            <section class="content-grid content-grid-wide">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Publish Notice</p>
+                            <h2>Create a campus communication</h2>
+                        </div>
+                    </div>
+                    <form class="form-grid form-grid-4" id="notice-form">
+                        <input name="title" placeholder="Notice title" required>
+                        <input name="category" placeholder="Category" required>
+                        <input name="priority" placeholder="Priority" required>
+                        <input name="message" placeholder="Notice message" required>
+                        <button class="btn btn-primary" type="submit">Publish notice</button>
+                    </form>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Announcement Health</p>
+                            <h2>Communication pulse</h2>
+                        </div>
+                    </div>
+                    <div id="communication-metrics" class="stack-md skeleton-block"></div>
+                </article>
+            </section>
+
+            <section class="glass-card section-card">
+                <div class="section-head">
+                    <div>
+                        <p class="caps-label">Create Event</p>
+                        <h2>Add a campus event dynamically</h2>
+                    </div>
+                </div>
+                <form class="form-grid form-grid-4" id="event-form">
+                    <input name="title" placeholder="Event title" required>
+                    <input name="category" placeholder="Category">
+                    <input name="date" type="date" required>
+                    <input name="venue" placeholder="Venue">
+                    <input name="message" placeholder="Event description">
+                    <button class="btn btn-secondary" type="submit">Create event</button>
+                </form>
+            </section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Notices</p>
+                            <h2>Current institutional updates</h2>
+                        </div>
+                    </div>
+                    <div id="notice-list" class="feed-list skeleton-block"></div>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Events</p>
+                            <h2>Upcoming campus moments</h2>
+                        </div>
+                    </div>
+                    <div id="event-list" class="feed-list skeleton-block"></div>
+                </article>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

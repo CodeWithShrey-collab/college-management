@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="dashboard" data-title="Dashboard">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="stats-grid dashboard-stats" id="overview-metrics"></section>
+
+            <section class="dashboard-middle-shell">
+                <div class="dashboard-main-column">
+                    <article class="glass-card section-card chart-panel">
+                        <div class="section-head compact">
+                            <div>
+                                <p class="caps-label">Attendance</p>
+                                <h2>Weekly Attendance</h2>
+                                <p class="section-subtitle">Daily attendance trend across the current academic week.</p>
+                            </div>
+                        </div>
+                        <div class="chart-canvas-wrap">
+                            <canvas id="attendance-chart" height="200"></canvas>
+                        </div>
+                    </article>
+
+                    <section class="module-card-grid" id="overview-highlights"></section>
+
+                    <article class="glass-card section-card events-strip-card">
+                        <div class="section-head compact">
+                            <div>
+                                <p class="caps-label">Upcoming Events</p>
+                                <h2>Campus Calendar</h2>
+                            </div>
+                        </div>
+                        <div class="events-strip" id="event-strip"></div>
+                    </article>
+                </div>
+
+                <div class="dashboard-side-column">
+                    <article class="glass-card section-card snapshot-card">
+                        <div class="section-head compact">
+                            <div>
+                                <p class="caps-label">Today's Snapshot</p>
+                                <h2>Operational Snapshot</h2>
+                            </div>
+                        </div>
+                        <div id="campus-pulse" class="mini-stat-list skeleton-block"></div>
+                    </article>
+
+                    <article class="glass-card section-card activity-card">
+                        <div class="section-head compact">
+                            <div>
+                                <p class="caps-label">Recent Activity</p>
+                                <h2>Campus Activity Feed</h2>
+                            </div>
+                        </div>
+                        <div id="recent-activity" class="activity-feed skeleton-block"></div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="content-grid dashboard-bottom-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Priority Notices</p>
+                            <h2>Active institutional alerts</h2>
+                        </div>
+                        <a class="text-link" href="/notices.html">View all notices</a>
+                    </div>
+                    <div id="notice-feed" class="feed-list skeleton-block"></div>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Academic Snapshot</p>
+                            <h2>Key ERP indicators</h2>
+                        </div>
+                    </div>
+                    <div id="analytics-breakdown" class="mini-stat-list skeleton-block"></div>
+                </article>
+            </section>
+            
+            <section class="content-grid dashboard-actions-row">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">System Routing</p>
+                            <h2>Quick operational access</h2>
+                        </div>
+                    </div>
+                    <div class="action-grid dashboard-actions">
+                        <a class="action-tile" href="/students.html">
+                            <span class="tile-kicker">Students</span>
+                            <strong>Admissions, academic records, and attendance updates.</strong>
+                        </a>
+                        <a class="action-tile" href="/faculty.html">
+                            <span class="tile-kicker">Faculty</span>
+                            <strong>Teaching allocations, office hours, and performance inputs.</strong>
+                        </a>
+                        <a class="action-tile" href="/fees.html">
+                            <span class="tile-kicker">Finance</span>
+                            <strong>Fee recovery, receipts, and pending account tracking.</strong>
+                        </a>
+                        <a class="action-tile" href="/library.html">
+                            <span class="tile-kicker">Library</span>
+                            <strong>Catalog circulation, borrower status, and fines.</strong>
+                        </a>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

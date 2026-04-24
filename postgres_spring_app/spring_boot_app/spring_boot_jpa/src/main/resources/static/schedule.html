@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Schedule</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="schedule" data-title="Timetable & Scheduling" data-subtitle="Keep class flow, examinations, and lab sessions synchronized through a dedicated scheduling console.">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="page-intro">
+                <div>
+                    <p class="caps-label">Schedule Control</p>
+                    <h1>See the rhythm of the week across classrooms, exams, and labs.</h1>
+                    <p class="page-copy">Use this layout to monitor recurring teaching blocks, exam slots, and specialized lab sessions without crowding a single dashboard.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="schedule-refresh">Refresh schedules</button>
+                    <a class="btn btn-secondary" href="/exams.html">Plan new exams</a>
+                </div>
+            </section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Add Class</p>
+                            <h2>Create a class schedule entry</h2>
+                        </div>
+                    </div>
+                    <form class="form-grid form-grid-3" id="class-form">
+                        <input name="day" placeholder="Day" required>
+                        <input name="time" placeholder="Time slot" required>
+                        <input name="course" placeholder="Course" required>
+                        <input name="faculty" placeholder="Faculty">
+                        <input name="room" placeholder="Room">
+                        <button class="btn btn-primary" type="submit">Add class</button>
+                    </form>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Add Lab</p>
+                            <h2>Create a lab session entry</h2>
+                        </div>
+                    </div>
+                    <form class="form-grid form-grid-3" id="lab-form">
+                        <input name="day" placeholder="Day" required>
+                        <input name="time" placeholder="Time slot" required>
+                        <input name="lab" placeholder="Lab name" required>
+                        <input name="faculty" placeholder="Faculty">
+                        <input name="room" placeholder="Lab room">
+                        <button class="btn btn-secondary" type="submit">Add lab</button>
+                    </form>
+                </article>
+            </section>
+
+            <section class="stats-grid" id="schedule-metrics"></section>
+
+            <section class="panel-grid panel-grid-3">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Classes</p>
+                            <h2>Weekly class timetable</h2>
+                        </div>
+                    </div>
+                    <div id="class-schedule" class="feed-list skeleton-block"></div>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Exams</p>
+                            <h2>Scheduled assessments</h2>
+                        </div>
+                    </div>
+                    <div id="exam-schedule" class="feed-list skeleton-block"></div>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Labs</p>
+                            <h2>Practical sessions</h2>
+                        </div>
+                    </div>
+                    <div id="lab-schedule" class="feed-list skeleton-block"></div>
+                </article>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

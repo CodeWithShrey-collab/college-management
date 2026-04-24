@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Exams</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="exams" data-title="Examination System" data-subtitle="Create exam schedules, review assessment slots, and generate report cards from a dedicated assessment page.">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="page-intro">
+                <div>
+                    <p class="caps-label">Assessment Engine</p>
+                    <h1>Structure evaluation windows with less friction and stronger academic visibility.</h1>
+                    <p class="page-copy">Schedule new examinations, audit existing slots, and generate a report card view for any student in a focused assessment workflow.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="exams-refresh">Refresh exam data</button>
+                    <a class="btn btn-secondary" href="/students.html">Back to students</a>
+                </div>
+            </section>
+
+            <section class="content-grid content-grid-wide">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Create Exam</p>
+                            <h2>Publish a new assessment slot</h2>
+                        </div>
+                    </div>
+                    <form class="form-grid form-grid-3" id="exam-form">
+                        <input name="course" placeholder="Course name" required>
+                        <input name="date" type="date" required>
+                        <input name="slot" placeholder="Time slot" required>
+                        <input name="hall" placeholder="Hall" required>
+                        <input name="type" placeholder="Exam type" required>
+                        <button class="btn btn-primary" type="submit">Create exam</button>
+                    </form>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Report Card</p>
+                            <h2>Load a student result snapshot</h2>
+                        </div>
+                    </div>
+                    <form class="mini-form" id="report-card-form">
+                        <input name="studentId" placeholder="Student ID" required>
+                        <button class="btn btn-secondary" type="submit">Generate report card</button>
+                    </form>
+                    <div id="report-card" class="report-card-shell muted-panel">Choose a student to render an academic result summary.</div>
+                </article>
+            </section>
+
+            <section class="glass-card section-card">
+                <div class="section-head">
+                    <div>
+                        <p class="caps-label">Exam Register</p>
+                        <h2>Current exam timetable</h2>
+                    </div>
+                </div>
+                <div class="table-shell" id="exams-table"></div>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

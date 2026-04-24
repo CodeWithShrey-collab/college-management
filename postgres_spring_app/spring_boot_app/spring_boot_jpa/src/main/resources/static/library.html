@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="library" data-title="Library Management" data-subtitle="Search, issue, return, and monitor fine status through a cleaner circulation workflow.">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="page-intro">
+                <div>
+                    <p class="caps-label">Library Operations</p>
+                    <h1>Give the library its own space instead of burying circulation inside a crowded dashboard.</h1>
+                    <p class="page-copy">Track issued books, borrower details, due dates, and fine values while keeping the catalog visible and searchable in a dedicated interface.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="library-refresh">Refresh library data</button>
+                    <a class="btn btn-secondary" href="/admin.html">Review admin metrics</a>
+                </div>
+            </section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Add Book</p>
+                            <h2>Create a library record</h2>
+                        </div>
+                    </div>
+                    <form class="form-grid form-grid-3" id="book-form">
+                        <input name="bookId" placeholder="Book ID (optional)">
+                        <input name="title" placeholder="Book title" required>
+                        <input name="author" placeholder="Author" required>
+                        <button class="btn btn-primary" type="submit">Add book</button>
+                    </form>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Issue Book</p>
+                            <h2>Assign a title to a borrower</h2>
+                        </div>
+                    </div>
+                    <form class="mini-form" id="issue-form">
+                        <input name="bookId" placeholder="Book ID" required>
+                        <input name="studentName" placeholder="Student name" required>
+                        <input name="dueDate" type="date" required>
+                        <button class="btn btn-primary" type="submit">Issue book</button>
+                    </form>
+                </article>
+
+            </section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Return Book</p>
+                            <h2>Close a circulation entry</h2>
+                        </div>
+                    </div>
+                    <form class="mini-form" id="return-form">
+                        <input name="bookId" placeholder="Book ID" required>
+                        <input name="fine" placeholder="Fine amount">
+                        <button class="btn btn-secondary" type="submit">Return book</button>
+                    </form>
+                </article>
+            </section>
+
+            <section class="stats-grid" id="library-metrics"></section>
+
+            <section class="glass-card section-card">
+                <div class="section-head">
+                    <div>
+                        <p class="caps-label">Catalog & Circulation</p>
+                        <h2>Book inventory and status view</h2>
+                    </div>
+                </div>
+                <div class="table-shell" id="library-table"></div>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

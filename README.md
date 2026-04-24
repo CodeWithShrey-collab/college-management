@@ -1,115 +1,193 @@
-# Dockerized Spring boot application with PostgreSQL
+# Aurora Campus ERP
 
-This project demonstrates a fully Dockerized environment for a Spring Boot application integrated with a PostgreSQL database. The application leverages JPA and Hibernate for seamless data persistence, providing a robust and scalable backend solution. Docker Compose is used to orchestrate the containers, ensuring easy setup and deployment.
+`Aurora Campus ERP` is a college management platform built with `Java`, `Spring Boot`, `PostgreSQL`, and `Docker Compose`.
+It upgrades the original sample project into a broader campus ERP with a polished frontend and database-backed academic workflows.
 
-## Getting Started
+## Modules
 
-These instructions will get you a copy of the project up and running on your local machine for development purposes. See running for notes on how to run the project on a system.
+- `Student Management`
+  Registration, profile details, attendance, marks, and fee status
+- `Faculty Management`
+  Demo login, attendance updates, marks entry, timetable visibility, and course allocation
+- `Timetable & Scheduling`
+  Class schedule, exam timetable, and lab timings
+- `Examination System`
+  Exam creation, marks updates, result generation, and report card view
+- `Fee Management`
+  Fee payment tracking, history, and receipt records
+- `Notice & Announcement System`
+  College notices, event announcements, and emergency-style alerts
+- `Library Management`
+  Book catalog, issue/return flow, and fine tracking
+- `Admin Analytics`
+  Student/faculty counts, fee summaries, attendance, CGPA, and active notice metrics
+- `AI Chatbot`
+  Assistant responses generated from live database-backed ERP records
 
-### Prerequisites
+## Tech Stack
 
-1. Clone the project to your local environment:
-    ```
-    git clone https://github.com/ankitrajput0096/Dockerized_SpringBoot_PostgreSQL
-    ```
+- `Java 8`
+- `Spring Boot 2`
+- `Spring Data JPA / Hibernate`
+- `PostgreSQL`
+- `Maven`
+- `Docker`
+- `Docker Compose`
+- `HTML`, `CSS`, `JavaScript`
 
-2. You need maven installed on your environment:
+## Project Structure
 
-    #### Mac (homebrew):
-    
-    ```
-    brew install maven
-    ```
-    #### Ubuntu:
-    ```
-    sudo apt-get install maven
-    ```
+The runnable application lives inside:
 
-3. You need Docker to be installed:
-
-    #### Windows:
-    https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe
-    
-    #### Mac:
-    https://download.docker.com/mac/stable/Docker.dmg
-    
-    #### Ubuntu:
-    https://docs.docker.com/install/linux/docker-ce/ubuntu/
-
-### Installing
-
-Once you have maven and docker installed on your environment, install the project dependencies via:
-
-```
-mvn install
-```
-
-Build docker Image:
-
-```
-docker-compose build
+```text
+postgres_spring_app/
 ```
 
-Start docker:
+Main files for the ERP layer:
 
+- `postgres_spring_app/spring_boot_app/spring_boot_jpa/src/main/java/com/example/Spring_Boot_JPA/controller/CollegeErpController.java`
+- `postgres_spring_app/spring_boot_app/spring_boot_jpa/src/main/java/com/example/Spring_Boot_JPA/service/CollegeErpService.java`
+- `postgres_spring_app/spring_boot_app/spring_boot_jpa/src/main/resources/static/index.html`
+- `postgres_spring_app/spring_boot_app/spring_boot_jpa/src/main/resources/static/app.css`
+- `postgres_spring_app/spring_boot_app/spring_boot_jpa/src/main/resources/static/app.js`
+
+## Prerequisites
+
+Install:
+
+- `Docker Desktop`
+- `WSL` updates on Windows if Docker asks for it
+
+Optional for local compile-only verification:
+
+- `Java JDK`
+
+## Run With Docker
+
+Open a terminal in:
+
+```powershell
+cd "G:\Cloud Project\Dockerized_SpringBoot_PostgreSQL\postgres_spring_app"
 ```
-docker-compose up
+
+Start the database and backend:
+
+```powershell
+docker compose up --build
 ```
 
-## Running
+When startup finishes, open:
 
-Start docker:
-```
-docker-compose up
-```
-
-Run the application from the `Application.java` main method directly,
-or from a command line:
-```
-mvn spring-boot:run
+```text
+http://localhost:8090
 ```
 
-Keep docker running in a separate terminal tab, create another tab to run the application.
+The root route now forwards to the ERP frontend automatically.
 
-Your server should be now running on http://localhost:8090
+To stop the app:
 
-## Alternate way to start this application
-1. Clone this repository
-2. Bring up the application by just using docker-compose 
-    ```
-    sudo docker-compose -f my-docker-compose.yml up
-    ```
-    Your server should be now running on http://localhost:8090
-3. Bring down the application 
-    ```
-    sudo docker-compose -f my-docker-compose.yml down
-    ```
-## Get an access to all exposed API's with Postman
+```powershell
+docker compose down
+```
 
-1. Install Postman (https://www.getpostman.com)
-2. Import Postman collection from the `Dockerized_SpringBoot_PostgreSQL.postman_collection.json` file
-3. Enjoy !!
+To stop and clear saved database data:
 
-## Built With
+```powershell
+docker compose down -v
+```
 
-* [Spring Boot](https://spring.io/projects/spring-boot) - Spring Boot 2
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [Docker](https://www.docker.com/) - For containerization of application
-* [PostgreSQL](https://www.postgresql.org/) - Database
+## Compile Locally
 
-## Contributing
+If you only want to verify compilation:
 
-If you have any improvement suggestions please create a pull request and I'll review it.
+```powershell
+cd "G:\Cloud Project\Dockerized_SpringBoot_PostgreSQL\postgres_spring_app\spring_boot_app\spring_boot_jpa"
+$env:JAVA_HOME="C:\Program Files\Java\jdk-24"
+.\mvnw.cmd -q -DskipTests compile
+```
 
+## Main API Endpoints
 
-## Authors
+Base path:
 
-* **Ankit Rajput** - *Initial work* - [Github](https://github.com/ankitrajput0096)
+```text
+/api/erp
+```
 
-## License
+Endpoints:
 
-This project is licensed under the MIT License
+- `GET /api/erp/overview`
+- `POST /api/erp/auth/login`
+- `GET /api/erp/students`
+- `POST /api/erp/students/register`
+- `GET /api/erp/students/{studentId}/report-card`
+- `GET /api/erp/faculty`
+- `POST /api/erp/faculty/attendance`
+- `POST /api/erp/faculty/marks`
+- `GET /api/erp/timetable`
+- `GET /api/erp/exams`
+- `POST /api/erp/exams`
+- `GET /api/erp/fees`
+- `POST /api/erp/fees/pay`
+- `GET /api/erp/notices`
+- `POST /api/erp/notices`
+- `GET /api/erp/communications`
+- `GET /api/erp/library`
+- `POST /api/erp/library/issue`
+- `POST /api/erp/library/return`
+- `GET /api/erp/admin/analytics`
+- `POST /api/erp/chat`
 
-## Acknowledgments
+## Sample Requests
 
-* Big thanks to Pivotal for Spring Boot framework, love it!
+Register a student:
+
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8090/api/erp/students/register" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body '{"studentId":"S201","name":"Aditi Rao","email":"aditi.rao@aurora.edu","department":"Computer Science","semester":"Semester 2","phone":"+91-99999-12345"}'
+```
+
+Create an exam:
+
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8090/api/erp/exams" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body '{"course":"Cloud Computing","date":"2026-05-20","slot":"10:00 AM - 01:00 PM","hall":"Hall B","type":"End Semester"}'
+```
+
+Record fee payment:
+
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8090/api/erp/fees/pay" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body '{"studentId":"S102","amount":"25000","mode":"Online"}'
+```
+
+Ask the AI assistant:
+
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8090/api/erp/chat" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body '{"question":"When is my next exam?"}'
+```
+
+## Browser Routes
+
+- `http://localhost:8090`
+- `http://localhost:8090/index.html`
+
+## Notes
+
+- The ERP frontend is multi-page and the campus modules are backed by PostgreSQL records instead of hardcoded in-memory data.
+- The legacy book/topic APIs from the original repository still exist in the codebase.
+- The underlying application still expects PostgreSQL during full runtime, so Docker Compose remains the easiest way to run it end to end.
+
+## Credits
+
+Original repository:
+[ankitrajput0096/Dockerized_SpringBoot_PostgreSQL](https://github.com/ankitrajput0096/Dockerized_SpringBoot_PostgreSQL)

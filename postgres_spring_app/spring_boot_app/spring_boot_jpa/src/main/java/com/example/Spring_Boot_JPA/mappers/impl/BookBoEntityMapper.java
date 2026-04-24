@@ -26,7 +26,7 @@ public class BookBoEntityMapper
     public BookBo toBo(Book book) {
         BookBoBuilder bookBoBuilder = BookBo.builder()
                 .id(book.getId())
-                .bookId(book.getName())
+                .bookId(book.getBookId())
                 .bookName(book.getName())
                 .createAt(book.getCreatedAt());
 

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Fees</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="fees" data-title="Fee Management" data-subtitle="Track due amounts, record payments, and inspect receipt history through a cleaner finance workflow.">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="page-intro">
+                <div>
+                    <p class="caps-label">Finance Desk</p>
+                    <h1>Make fee tracking feel operational, not chaotic.</h1>
+                    <p class="page-copy">Surface pending balances, mark payments through online or offline modes, and keep every recorded receipt visible to the admin team.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="fees-refresh">Refresh fee data</button>
+                    <a class="btn btn-secondary" href="/admin.html">Open admin analytics</a>
+                </div>
+            </section>
+
+            <section class="content-grid content-grid-wide">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Record Payment</p>
+                            <h2>Capture a new fee transaction</h2>
+                        </div>
+                    </div>
+                    <form class="form-grid" id="fee-form">
+                        <input name="studentId" placeholder="Student ID" required>
+                        <input name="amount" placeholder="Amount" required>
+                        <select name="mode">
+                            <option value="Online">Online</option>
+                            <option value="Offline">Offline</option>
+                        </select>
+                        <button class="btn btn-primary" type="submit">Record payment</button>
+                    </form>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Payment Snapshot</p>
+                            <h2>Fast financial indicators</h2>
+                        </div>
+                    </div>
+                    <div id="fee-summary-cards" class="stack-md skeleton-block"></div>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Fee Status</p>
+                            <h2>Student dues and settlement state</h2>
+                        </div>
+                    </div>
+                    <div class="table-shell" id="fees-table"></div>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Receipts</p>
+                            <h2>Recorded payment history</h2>
+                        </div>
+                    </div>
+                    <div class="table-shell" id="receipts-table"></div>
+                </article>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

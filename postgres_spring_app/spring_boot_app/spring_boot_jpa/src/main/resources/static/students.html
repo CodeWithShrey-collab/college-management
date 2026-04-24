@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Campus ERP | Students</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body data-page="students" data-title="Student Management" data-subtitle="Handle registrations, academic profiles, attendance status, and marks from a dedicated workspace.">
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar-root"></aside>
+    <div class="workspace">
+        <header class="topbar" id="topbar-root"></header>
+        <main class="page-main">
+            <section class="page-intro">
+                <div>
+                    <p class="caps-label">Student Operations</p>
+                    <h1>Every student record, attendance signal, and academic update in one place.</h1>
+                    <p class="page-copy">Use this page to register new learners, update attendance, refresh CGPA records, and review the current student roster.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary" id="students-refresh">Refresh student data</button>
+                    <a class="btn btn-secondary" href="/exams.html">Go to report cards</a>
+                </div>
+            </section>
+
+            <section class="content-grid content-grid-wide">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Registration</p>
+                            <h2>Create a new student profile</h2>
+                        </div>
+                    </div>
+                    <form class="form-grid form-grid-3" id="student-form">
+                        <input name="studentId" placeholder="Student ID (optional)">
+                        <input name="name" placeholder="Full name" required>
+                        <input name="email" placeholder="Email address">
+                        <input name="department" placeholder="Department">
+                        <input name="semester" placeholder="Semester">
+                        <input name="phone" placeholder="Phone number">
+                        <button class="btn btn-primary" type="submit">Register student</button>
+                    </form>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Academic Updates</p>
+                            <h2>Attendance and marks</h2>
+                        </div>
+                    </div>
+                    <div class="content-grid">
+                        <form class="mini-form" id="attendance-form">
+                            <label class="field-label">Attendance update</label>
+                            <input name="studentId" placeholder="Student ID" required>
+                            <input name="attendance" placeholder="Attendance %" required>
+                            <button class="btn btn-secondary" type="submit">Save attendance</button>
+                        </form>
+                        <form class="mini-form" id="marks-form">
+                            <label class="field-label">Marks / CGPA update</label>
+                            <input name="studentId" placeholder="Student ID" required>
+                            <input name="subject" placeholder="Subject">
+                            <input name="marks" placeholder="Marks">
+                            <input name="grade" placeholder="Grade">
+                            <input name="cgpa" placeholder="CGPA" required>
+                            <button class="btn btn-secondary" type="submit">Save marks</button>
+                        </form>
+                    </div>
+                </article>
+            </section>
+
+            <section class="stats-grid" id="student-metrics"></section>
+
+            <section class="content-grid">
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Student Registry</p>
+                            <h2>Active student roster</h2>
+                        </div>
+                    </div>
+                    <div class="table-shell" id="students-table"></div>
+                </article>
+
+                <article class="glass-card section-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="caps-label">Academic Health</p>
+                            <h2>Distribution highlights</h2>
+                        </div>
+                    </div>
+                    <div id="student-insights" class="stack-md skeleton-block"></div>
+                </article>
+            </section>
+        </main>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>
