@@ -17,5 +17,9 @@ services:
       context: ./spring_boot_app
     ports:
       - "8090:8090"
+    environment:
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
+      NVIDIA_API_BASE_URL: ${NVIDIA_API_BASE_URL:-https://integrate.api.nvidia.com/v1}
+      NVIDIA_API_MODEL: ${NVIDIA_API_MODEL:-meta/llama-3.1-8b-instruct}
     depends_on:
       - db

@@ -155,4 +155,12 @@ public class CollegeErpController {
         error.put("status", 400);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> handleStateError(IllegalStateException exception) {
+        Map<String, Object> error = new LinkedHashMap<>();
+        error.put("message", exception.getMessage());
+        error.put("status", 500);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
 }
