@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: college-management
+    runtime: java
+    rootDir: postgres_spring_app/spring_boot_app/spring_boot_jpa
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -Dserver.port=$PORT -jar target/Spring_Boot_JPA-0.0.1-SNAPSHOT.jar
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: college-management-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: college-management-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: college-management-db
+          property: password
+
+databases:
+  - name: college-management-db
+    plan: free

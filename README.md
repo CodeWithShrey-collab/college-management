@@ -181,11 +181,35 @@ Invoke-RestMethod -Uri "http://localhost:8090/api/erp/chat" `
 - `http://localhost:8090`
 - `http://localhost:8090/index.html`
 
+## Deploy To Render
+
+This repo includes a ready-to-use [render.yaml](G:\Cloud Project\Dockerized_SpringBoot_PostgreSQL\render.yaml:1) blueprint.
+
+Recommended Render setup:
+
+1. Create a new `Blueprint` service in Render.
+2. Connect the GitHub repo.
+3. Render will detect:
+   - Web service name: `college-management`
+   - Root directory: `postgres_spring_app/spring_boot_app/spring_boot_jpa`
+   - Build command: `./mvnw clean package -DskipTests`
+   - Start command: `java -Dserver.port=$PORT -jar target/Spring_Boot_JPA-0.0.1-SNAPSHOT.jar`
+4. Render will also provision the PostgreSQL database defined in `render.yaml`.
+5. After deployment, open the generated Render URL.
+
+Important:
+
+- The UI uses Firebase Authentication and Firebase Realtime Database for login/session/data workflows.
+- The Spring Boot service still needs PostgreSQL at startup because JPA entities and repositories are part of the app.
+- `application.properties` now supports Render environment variables for datasource and port configuration.
+
 ## Notes
 
-- The ERP frontend is multi-page and the campus modules are backed by PostgreSQL records instead of hardcoded in-memory data.
+- The ERP frontend is multi-page.
+- Role-based login and most interactive campus workflows are backed by Firebase.
+- The Spring Boot application still initializes with PostgreSQL because the app includes JPA repositories and entities.
 - The legacy book/topic APIs from the original repository still exist in the codebase.
-- The underlying application still expects PostgreSQL during full runtime, so Docker Compose remains the easiest way to run it end to end.
+- Docker Compose remains the easiest way to run it locally end to end.
 
 ## Credits
 
