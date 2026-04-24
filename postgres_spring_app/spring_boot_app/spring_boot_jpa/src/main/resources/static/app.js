@@ -34,6 +34,9 @@ import {
 } from '/firebase-backend.js';
 
 const page = document.body.dataset.page || 'dashboard';
+const GPTOSS_MODEL = 'gpt-oss-20b';
+const GPTOSS_BASE_URL_KEY = 'auroraGptOssBaseUrl';
+const GPTOSS_THREAD_KEY = 'auroraGptOssThreadId';
 
 const pages = [
   { key: 'dashboard', href: '/', label: 'Dashboard', hint: 'Campus overview' },
@@ -763,12 +766,19 @@ async function loadAdminPage() {
 
 async function initAssistantPage() {
   bindRefresh('assistant-refresh', resetAssistant);
+  bindForm('assistant-config-form', async (payload) => {
+    setGptOssBaseUrl(payload.baseUrl);
+    renderAssistantConnectionStatus();
+    toast('GPTOSS worker URL saved.');
+  });
   bindPromptChips();
   bindForm('chat-form', async (payload, form) => {
-    const result = await api.askAi(payload);
-    renderChat(result.question, result.answer);
+    const result = await askAssistant(payload.question);
+    renderChat(result.question, result.answer, result.reasoning);
     form.reset();
   });
+  populateAssistantConfig();
+  renderAssistantConnectionStatus();
   resetAssistant();
 }
 
@@ -778,7 +788,7 @@ function resetAssistant() {
   chatOutput.innerHTML = `
     <p class="caps-label">Conversation Ready</p>
     <h3>Ask Aurora AI anything about campus operations.</h3>
-    <p>Try prompts around exams, attendance, fee status, notices, or library circulation.</p>
+    <p>Try prompts around exams, attendance, fee status, notices, or library circulation. The assistant uses <strong>${GPTOSS_MODEL}</strong>.</p>
   `;
 }
 
@@ -786,18 +796,19 @@ function bindPromptChips() {
   document.querySelectorAll('.prompt-chip').forEach((button) => {
     button.addEventListener('click', async () => {
       await runAction(async () => {
-        const result = await api.askAi({ question: button.dataset.prompt });
-        renderChat(result.question, result.answer);
+        const result = await askAssistant(button.dataset.prompt);
+        renderChat(result.question, result.answer, result.reasoning);
       });
     });
   });
 }
 
-function renderChat(question, answer) {
+function renderChat(question, answer, reasoning = '') {
   document.getElementById('chat-output').innerHTML = `
     <p class="caps-label">Latest Response</p>
     <div class="feed-card">
       <h3>${escapeHtml(question)}</h3>
+      ${reasoning ? `<p><strong>Reasoning:</strong> ${escapeHtml(reasoning)}</p>` : ''}
       <p>${escapeHtml(answer)}</p>
     </div>
   `;
@@ -1292,6 +1303,133 @@ function bindInlineActions(containerId, selector, handler) {
       runAction(() => handler(button));
     });
   });
+}
+
+async function askAssistant(question) {
+  const baseUrl = getGptOssBaseUrl();
+  if (!baseUrl) {
+    throw new Error('Save your GPTOSS Worker URL first on the assistant page.');
+  }
+
+  const session = getCurrentSession();
+  const payload = {
+    model: GPTOSS_MODEL,
+    messages: [
+      {
+        role: 'system',
+        content: 'You are Aurora Campus ERP assistant. Answer clearly and briefly for college operations like attendance, exams, fees, timetable, notices, and library.'
+      },
+      {
+        role: 'user',
+        content: question
+      }
+    ],
+    stream: true,
+    metadata: {
+      reasoning_effort: 'medium',
+      gptoss_user_id: session?.uid || session?.email || 'guest-user',
+      gptoss_thread_id: getOrCreateGptOssThreadId()
+    }
+  };
+
+  const response = await fetch(`${baseUrl}/v1/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Reasoning-Effort': 'medium'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error(`GPTOSS request failed: ${response.status} ${response.statusText}`);
+  }
+
+  if (!response.body) {
+    const data = await response.json();
+    return {
+      question,
+      answer: data?.choices?.[0]?.message?.content || 'No response returned by GPTOSS.',
+      reasoning: data?.choices?.[0]?.message?.reasoning_content || ''
+    };
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let answer = '';
+  let reasoning = '';
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const parts = buffer.split('\n\n');
+    buffer = parts.pop() || '';
+
+    for (const part of parts) {
+      const line = part
+        .split('\n')
+        .find((entry) => entry.startsWith('data: '));
+      if (!line) continue;
+      const data = line.slice(6).trim();
+      if (!data || data === '[DONE]') continue;
+
+      let json;
+      try {
+        json = JSON.parse(data);
+      } catch (error) {
+        continue;
+      }
+
+      const delta = json?.choices?.[0]?.delta || {};
+      if (delta.reasoning_content) {
+        reasoning += delta.reasoning_content;
+      }
+      if (delta.content) {
+        answer += delta.content;
+      }
+    }
+  }
+
+  return {
+    question,
+    answer: answer || 'No assistant response was returned.',
+    reasoning
+  };
+}
+
+function getGptOssBaseUrl() {
+  const raw = window.localStorage.getItem(GPTOSS_BASE_URL_KEY) || '';
+  return raw.trim().replace(/\/+$/, '');
+}
+
+function setGptOssBaseUrl(value) {
+  const normalized = String(value || '').trim().replace(/\/+$/, '');
+  window.localStorage.setItem(GPTOSS_BASE_URL_KEY, normalized);
+}
+
+function getOrCreateGptOssThreadId() {
+  const existing = window.localStorage.getItem(GPTOSS_THREAD_KEY);
+  if (existing) return existing;
+  const generated = `thr_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+  window.localStorage.setItem(GPTOSS_THREAD_KEY, generated);
+  return generated;
+}
+
+function populateAssistantConfig() {
+  const input = document.getElementById('assistant-base-url');
+  if (!input) return;
+  input.value = getGptOssBaseUrl();
+}
+
+function renderAssistantConnectionStatus() {
+  const node = document.getElementById('assistant-connection-status');
+  if (!node) return;
+  const baseUrl = getGptOssBaseUrl();
+  node.innerHTML = baseUrl
+    ? `Connected to <strong>${escapeHtml(baseUrl)}</strong><br>Model: <strong>${GPTOSS_MODEL}</strong>`
+    : `Model: <strong>${GPTOSS_MODEL}</strong><br>Save your GPTOSS Worker URL to enable live chat.`;
 }
 
 function formToObject(form) {

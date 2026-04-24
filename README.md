@@ -200,6 +200,8 @@ Recommended Render setup:
 Important:
 
 - The UI uses Firebase Authentication and Firebase Realtime Database for login/session/data workflows.
+- The AI Assistant page now supports a GPTOSS-compatible Cloudflare Worker and defaults to model `gpt-oss-20b`.
+- After deployment, open `/assistant.html` and save your Worker URL, for example `https://your-worker.workers.dev`.
 - The Spring Boot service still needs PostgreSQL at startup because JPA entities and repositories are part of the app.
 - `application.properties` now supports Render environment variables for datasource and port configuration.
 
